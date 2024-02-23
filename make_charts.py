@@ -2,7 +2,7 @@ import yfinance as yf
 import plotly.graph_objects as go
 
 # Fetching sufficient data to calculate the 100-day moving average
-tickerSymbol = 'AAPL'
+tickerSymbol = 'IBM'
 tickerData = yf.Ticker(tickerSymbol)
 # Assuming '6mo' is enough to cover the 100-day period, adjust if necessary
 tickerDf = tickerData.history(period='12mo')
