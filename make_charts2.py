@@ -65,22 +65,22 @@ def plot_and_save_to_pngs(slices):
                                              low=curr_slice['Low'],
                                              close=curr_slice['Close'],
                                              increasing_line_color='green', decreasing_line_color='red',
-                                             name="Candlestick")])
+                                             name="Candlestick", showlegend=False)])
         # Adding the 5-day Moving Average line
         fig.add_trace(go.Scatter(x=curr_slice.index, y=curr_slice['5d_MA'],
                                  mode='lines', name='5-Day MA',
-                                 line=dict(color='blue', width=2)))
+                                 line=dict(color='blue', width=2),
+                                 showlegend=False))  # Remove from legend
 
         # Adding the 100-day Moving Average line
         fig.add_trace(go.Scatter(x=curr_slice.index, y=curr_slice['100d_MA'],
                                  mode='lines', name='100-Day MA',
-                                 line=dict(color='orange', width=2)))
+                                 line=dict(color='orange', width=2),
+                                 showlegend=False))  # Remove from legend
 
-        fig.update_layout(title='AAPL Candlestick Chart with 5-Day and 100-Day Moving Averages for the Last 20 Days',
-                          xaxis_title='Date',
-                          yaxis_title='Price in USD',
-                          xaxis_rangeslider_visible=False)  # Hide the range slider
-
+        fig.update_layout(xaxis_rangeslider_visible=False,  # Hide the range slider
+                          yaxis_showticklabels=False,  # Hide y-axis labels
+                          xaxis_showticklabels=False)  # Hide x-axis labels
         # fig.show()
         path_to_write_image = 'visual_data/fig' + str(i) + '.png'
         fig.write_image(path_to_write_image)
@@ -146,7 +146,6 @@ def convert_pngs_to_numpy_matrices(folder_path, labels):
         index += 1
 
         labeled_image_matrices.append(curr_matrix_with_label)
-        # TODO: Convert the background to black
         # plt.imshow(curr_matrix)
         # plt.show()
     return labeled_image_matrices
@@ -186,20 +185,16 @@ def convert_pngs_to_numpy_matrices(folder_path, labels):
 
 
 # Keep this commented!!!
-# plot_and_save_to_pngs(slices=slices)
+plot_and_save_to_pngs(slices=slices)
 
-# Example usage:
-folder_path = 'visual_data'
-num_files = count_files_in_folder(folder_path)
-print("Number of files in the folder:", num_files)
 
-# TODO: Shuffles the sample
-# random.shuffle(data_with_labels)
-print("test1")
-print(len(data_with_labels))
 image_matrices_with_labels = convert_pngs_to_numpy_matrices(folder_path='visual_data', labels=data_with_labels)
 print("test2")
 print(len(image_matrices_with_labels))
+print(type(image_matrices_with_labels[0][0]))
+#
+# plt.imshow(image_matrices_with_labels[0][0])
+# plt.show()
 
-plt.imshow(image_matrices_with_labels[0][0])
-plt.show()
+# TODO: Shuffles the sample
+# random.shuffle(data_with_labels)
