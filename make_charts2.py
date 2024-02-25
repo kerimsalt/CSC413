@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import matplotlib.pyplot as plt
 import yfinance as yf
 import plotly.graph_objects as go
@@ -32,11 +34,6 @@ for i in range(0, len(tickerDf) - 20, 1):
 
 # Got rid of the first 99 slices because all of them had NaN values for their 100 day moving average
 slices = slices[99:]
-print("1")
-print(slices[1])
-
-print("slices 1 Open")
-print(slices[1]['Open'][0])
 
 data_with_labels = []
 for i in range(len(slices) - 1):
@@ -51,7 +48,7 @@ for i in range(len(slices) - 1):
     elif close_curr_day < close_next_day * threshold:
         curr_data_with_label.append(1)  # Buy
     else:
-        curr_data_with_label.append(0)
+        curr_data_with_label.append(0)  # Hold
     data_with_labels.append(curr_data_with_label)
 
 
@@ -129,26 +126,34 @@ def count_files_in_folder(folder_path):
     return num_files
 
 
-def convert_pngs_to_numpy_matrices(folder_path, labels):
+def convert_pngs_to_numpy_matrices(folder_path, data_labels):
     files = os.listdir(folder_path)
     labeled_image_matrices = []
     index = 0
     for file in files:
-        if index >= len(labels):
+        if index >= len(data_labels):
             break
         # curr_matrix_with_label = [image_matrix, label]
         # label = {buy:1, sel: -1, hold:0}
         curr_matrix_with_label = []
-        curr_matrix = png_to_numpy_colored('visual_data/' + file)
+        curr_matrix = png_to_numpy_colored('visual_data/' + file)  # png converted to numpy matrix
         curr_matrix = make_background_black(curr_matrix)
-        curr_matrix_with_label.append(curr_matrix)
-        curr_matrix_with_label.append(labels[index])
+        curr_matrix_with_label.append(curr_matrix)  # add the numpy matrix
+        curr_matrix_with_label.append(data_labels[index][1])  # add the label of that matrix
         index += 1
 
         labeled_image_matrices.append(curr_matrix_with_label)
         # plt.imshow(curr_matrix)
         # plt.show()
     return labeled_image_matrices
+
+
+def save_to_npz(folder_path, data, name):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    # Save the numpy array into a npz file in the folder
+    np.save(folder_path + '/' + name, data)
+
 
 # C:\Users\kerim\PycharmProjects\CSC413\fig1.png
 # data_folder = 'C:/Users/kerim/PycharmProjects/CSC413/visual_data'
@@ -185,16 +190,28 @@ def convert_pngs_to_numpy_matrices(folder_path, labels):
 
 
 # Keep this commented!!!
-plot_and_save_to_pngs(slices=slices)
+# plot_and_save_to_pngs(slices=slices)
+
+# Keep these commented!!!
+image_matrices_with_labels_ordered = convert_pngs_to_numpy_matrices(folder_path='visual_data',
+                                                                    data_labels=data_with_labels)
+image_matrices_with_labels = deepcopy(image_matrices_with_labels_ordered)
+
+# Shuffles the sample
+random.shuffle(image_matrices_with_labels)
+
+# convert to numpy matrix
+image_matrices_with_labels = np.array(image_matrices_with_labels)
+
+# Data Legend:
+# image_matrices_with_labels[0][0] --> numpy matrix representation of figure 0
+# image_matrices_with_labels[0][1] --> label of figure 0
 
 
-image_matrices_with_labels = convert_pngs_to_numpy_matrices(folder_path='visual_data', labels=data_with_labels)
-print("test2")
-print(len(image_matrices_with_labels))
-print(type(image_matrices_with_labels[0][0]))
-#
-# plt.imshow(image_matrices_with_labels[0][0])
-# plt.show()
+save_to_npz(folder_path='numpy_matrix_data', data=image_matrices_with_labels_ordered, name='ordered_data')
+save_to_npz(folder_path='numpy_matrix_data', data=image_matrices_with_labels, name='shuffled_data')
 
-# TODO: Shuffles the sample
-# random.shuffle(data_with_labels)
+plt.imshow(image_matrices_with_labels[0][0])
+plt.show()
+
+
