@@ -99,7 +99,7 @@ def png_to_numpy_colored(image_path):
     return img_array
 
 
-def make_background_black(image_matrix):
+def make_background_black(image_matrix, threshold=0.95):
     # Create a copy of the image matrix to avoid modifying the original
     modified_image = image_matrix.copy()
 
@@ -114,6 +114,21 @@ def make_background_black(image_matrix):
     modified_image[:, :, :3][white_pixels] = 0
 
     return modified_image
+    # Alternative
+    # # Create a copy of the image matrix to avoid modifying the original
+    # modified_image = image_matrix.copy()
+    #
+    # # If the image has RGBA channels, set the alpha channel to 1 (fully opaque)
+    # if modified_image.shape[2] == 4:
+    #     modified_image[:, :, 3][modified_image[:, :, 3] != 0] = 1
+    #
+    # # Identify pixels where RGB values are all close to 1 (white background)
+    # white_pixels = np.all(modified_image[:, :, :3] > threshold, axis=-1)
+    #
+    # # Set the RGB values of white pixels to 0 (black background)
+    # modified_image[:, :, :3][white_pixels] = 0
+    #
+    # return modified_image
 
 
 def count_files_in_folder(folder_path):
