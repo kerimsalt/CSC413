@@ -77,10 +77,19 @@ def plot_and_save_to_pngs(slices):
 
         fig.update_layout(xaxis_rangeslider_visible=False,  # Hide the range slider
                           yaxis_showticklabels=False,  # Hide y-axis labels
-                          xaxis_showticklabels=False)  # Hide x-axis labels
+                          xaxis_showticklabels=False,  # Hide x-axis labels
+                          plot_bgcolor='black',  # Set background color to black
+                          paper_bgcolor='black',  # Set paper background color to black
+                          xaxis=dict(showgrid=False),  # Hide x-axis grid lines
+                          yaxis=dict(showgrid=False)  # Hide y-axis grid lines
+                          )  # Set font color to white
+                          # font = dict(color='white')
         # fig.show()
         path_to_write_image = 'visual_data/fig' + str(i) + '.png'
         fig.write_image(path_to_write_image)
+        print("its done")
+        break
+
 
 
 def png_to_numpy_colored(image_path):
@@ -205,28 +214,28 @@ def save_to_npz(folder_path, data, name):
 
 
 # Keep this commented!!!
-# plot_and_save_to_pngs(slices=slices)
+plot_and_save_to_pngs(slices=slices)
 
 # Keep these commented!!!
-image_matrices_with_labels_ordered = convert_pngs_to_numpy_matrices(folder_path='visual_data',
-                                                                    data_labels=data_with_labels)
-image_matrices_with_labels = deepcopy(image_matrices_with_labels_ordered)
+# image_matrices_with_labels_ordered = convert_pngs_to_numpy_matrices(folder_path='visual_data',
+#                                                                     data_labels=data_with_labels)
+# image_matrices_with_labels = deepcopy(image_matrices_with_labels_ordered)
 
 # Shuffles the sample
-random.shuffle(image_matrices_with_labels)
+# random.shuffle(image_matrices_with_labels)
 
 # convert to numpy matrix
-image_matrices_with_labels = np.array(image_matrices_with_labels)
+# image_matrices_with_labels = np.array(image_matrices_with_labels)
 
 # Data Legend:
 # image_matrices_with_labels[0][0] --> numpy matrix representation of figure 0
 # image_matrices_with_labels[0][1] --> label of figure 0
 
 
-save_to_npz(folder_path='numpy_matrix_data', data=image_matrices_with_labels_ordered, name='ordered_data')
-save_to_npz(folder_path='numpy_matrix_data', data=image_matrices_with_labels, name='shuffled_data')
+# save_to_npz(folder_path='numpy_matrix_data', data=image_matrices_with_labels_ordered, name='ordered_data')
+# save_to_npz(folder_path='numpy_matrix_data', data=image_matrices_with_labels, name='shuffled_data')
 
-plt.imshow(image_matrices_with_labels[0][0])
-plt.show()
+# plt.imshow(image_matrices_with_labels[0][0])
+# plt.show()
 
 
